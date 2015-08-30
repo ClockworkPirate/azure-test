@@ -1,4 +1,4 @@
-import cherrypy
+import os, cherrypy
 
 class AzureTest(object):
 	@cherrypy.expose
@@ -46,7 +46,7 @@ conf = {
 	}
 }
 
-wsgi_app = cherrypy.Application(AzureTest(), '/', conf)
+wsgi_app = cherrypy.Application(AzureTest(), '/')
 
 # if __name__ == '__main__':
 # 	l = 4
