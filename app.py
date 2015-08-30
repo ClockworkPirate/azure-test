@@ -1,11 +1,11 @@
 import cherrypy
 
-wsgi_app = cherrypy.Application(AzureTest(), '/')
-
 class AzureTest(object):
 	@cherrypy.expose
 	def index(self):
 		return open("index.html", "r").read()
+
+wsgi_app = cherrypy.Application(AzureTest(), '/')
 
 # class RobotControlAPI(object):
 # 	exposed = True
