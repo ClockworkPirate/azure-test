@@ -5,33 +5,48 @@ class AzureTest(object):
 	def index(self):
 		return open("index.html", "r").read()
 
-wsgi_app = cherrypy.Application(AzureTest(), '/')
+class AzureTestAPI(object):
+	exposed = True
 
-# class RobotControlAPI(object):
-# 	exposed = True
+	@cherrypy.tools.accept(media='text/plain')
+	def POST(self, direction):
+		print "Recieved control."
+		if direction == "f":
+			print "Moving forward."
+			digitalWrite(l, HIGH)
+			digitalWrite(r, HIGH)
+			delay(100)
+		elif direction == "l":
+			print "Turning left."
+			digitalWrite(l, LOW)
+			digitalWrite(r, HIGH)
+			delay(100)
+		elif direction == "r":
+			print "Turning right."
+			digitalWrite(l, HIGH)
+			digitalWrite(r, LOW)
+			delay(100)
+		else:
+			print "Stopping."
+			digitalWrite(l, LOW)
+			digitalWrite(r, LOW)
 
-# 	@cherrypy.tools.accept(media='text/plain')
-# 	def POST(self, direction):
-# 		print "Recieved control."
-# 		if direction == "f":
-# 			print "Moving forward."
-# 			digitalWrite(l, HIGH)
-# 			digitalWrite(r, HIGH)
-# 			delay(100)
-# 		elif direction == "l":
-# 			print "Turning left."
-# 			digitalWrite(l, LOW)
-# 			digitalWrite(r, HIGH)
-# 			delay(100)
-# 		elif direction == "r":
-# 			print "Turning right."
-# 			digitalWrite(l, HIGH)
-# 			digitalWrite(r, LOW)
-# 			delay(100)
-# 		else:
-# 			print "Stopping."
-# 			digitalWrite(l, LOW)
-# 			digitalWrite(r, LOW)
+conf = {
+	'/': {
+		'tools.staticdir.root': os.path.abspath(os.getcwd())
+	},
+	'/control': {
+		'request.dispatch': cherrypy.dispatch.MethodDispatcher(),
+		'tools.response_headers.on': True,
+		'tools.response_headers.headers': [('Content-Type', 'text/plain')],
+	},
+	'/static': {
+		'tools.staticdir.on': True,
+		'tools.staticdir.dir': './public'
+	}
+}
+
+wsgi_app = cherrypy.Application(AzureTest(), '/', conf)
 
 # if __name__ == '__main__':
 # 	l = 4
